@@ -1,47 +1,40 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+    <div id="app">
+      <Playground>
+        <Player :top="10" :left="200" :position="'CF'"/>
+        <Player :top="10" :left="350" :position="'CF'"/>
+        <Player :top="100" :left="20" :position="'LM'"/>
+        <Player :top="100" :left="500" :position="'RM'"/>
+        <Player :top="150" :left="200" :position="'CM'"/>
+        <Player :top="150" :left="350" :position="'CM'"/>
+        <Player :top="250" :left="200" :position="'CB'"/>
+        <Player :top="250" :left="350" :position="'CB'"/>
+        <Player :top="200" :left="20" :position="'LB'"/>
+        <Player :top="200" :left="500" :position="'RB'"/>
+        <Player :top="300" :left="270" :position="'GK'"/>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      </Playground>
     </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
-</template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+  </template>
+  
+  <script>
+  import Playground from './components/Playground.vue';
+  import Player from './components/Player.vue';
+  
+  export default {
+    name: 'App',
+    components: {
+      Playground,
+      Player,
+    },
+  };
+  </script>
+  
+  <style>
+  #app {
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 60px;
   }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
+  </style>
+  
