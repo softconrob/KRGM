@@ -1,25 +1,23 @@
 <template>
   <div class="football-container">
-    
-
     <div class="football-playground">
       <img src="@/assets/field.jpeg" alt="Field"  />
       <slot></slot>
-      <Player ref="player1" :top="10" :left="200" :position="'CF'" @click="showBarChart" />
-      <Player ref="player2" :top="10" :left="350" :position="'CF'" @click="showBarChart" />
-      <Player ref="player3" :top="100" :left="20" :position="'LM'" @click="showBarChart" />
-      <Player ref="player4" :top="100" :left="500" :position="'RM'" @click="showBarChart" />
-      <Player ref="player5" :top="150" :left="200" :position="'CM'" @click="showBarChart" />
-      <Player ref="player6" :top="150" :left="350" :position="'CM'" @click="showBarChart" />
-      <Player :top="250" :left="200" :position="'CB'" @click="showBarChart" />
-      <Player :top="250" :left="350" :position="'CB'" @click="showBarChart" />
-      <Player :top="200" :left="20" :position="'LB'" @click="showBarChart" />
-      <Player :top="200" :left="500" :position="'RB'" @click="showBarChart" />
-      <Player :top="300" :left="270" :position="'GK'" @click="showBarChart" />
+      <Player :top="10" :left="200" :position="'CF'" @showBarChart="showBarChart"/>
+      <Player :top="10" :left="350" :position="'CF'" @showBarChart="showBarChart" />
+      <Player :top="100" :left="20" :position="'LM'" @showBarChart="showBarChart" />
+      <Player :top="100" :left="500" :position="'RM'" @showBarChart="showBarChart" />
+      <Player :top="150" :left="200" :position="'CM'" @showBarChart="showBarChart" />
+      <Player :top="150" :left="350" :position="'CM'" @showBarChart="showBarChart" />
+      <Player :top="250" :left="200" :position="'CB'" @showBarChart="showBarChart" />
+      <Player :top="250" :left="350" :position="'CB'" @showBarChart="showBarChart" />
+      <Player :top="200" :left="20" :position="'LB'" @showBarChart="showBarChart" />
+      <Player :top="200" :left="500" :position="'RB'" @showBarChart="showBarChart" />
+      <Player :top="300" :left="270" :position="'GK'" @showBarChart="showBarChart" />
     </div>
-    <!-- Bar chart component -->
-    <BarChart v-if="showChart" :data="chartData" @close="closeBarChart" />
+    <BarChart :position="selectedPosition" />
   </div>
+  
 </template>
   
   <script>
@@ -34,26 +32,14 @@
   },
   data() {
     return {
-      showChart: false,
-      chartData: {},
+      selectedPosition: 'CF',
     };
   },
   methods: {
-    showBarChart() {
-      this.showChart = true;
-      this.chartData = {
-        bar1: 50,
-        bar2: 30,
-        bar3: 70,
-        bar4: 60,
-        bar5: 90,
-
-      };
+    showBarChart(position) {
+      this.selectedPosition = position;
     },
-    closeBarChart() {
-      // Set showChart to false to hide the bar chart
-      this.showChart = false;
-    },
+    
   },
 };
   </script>

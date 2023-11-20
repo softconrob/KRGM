@@ -1,5 +1,5 @@
 <template>
-    <div class="football-player" :style="{ top: `${top}px`, left: `${left}px` }">
+    <div class="football-player" :style="{ top: `${top}px`, left: `${left}px` }" @click="handleClick">
         <img src="@/assets/player.svg" alt="Player" />
         <span class="player-position">{{ position }}</span>
     </div>
@@ -22,6 +22,12 @@
         default: 'forward',
       },
     },
+    methods: {
+    handleClick() {
+      // Emit a 'showBarChart' event with the player's position
+      this.$emit('showBarChart', this.position);
+    },
+  },
   };
   </script>
   
