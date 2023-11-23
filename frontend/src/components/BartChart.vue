@@ -18,7 +18,6 @@
     watch: {
       position: function() {
         this.drawBarChart();
-        console.log('position changed');
       }
     },
     methods: {
@@ -113,10 +112,6 @@
         width: 600px;
         height: 400px;
     }
-  button {
-    margin-top: 10px;
-    cursor: pointer;
-  }
   </style>
   
   

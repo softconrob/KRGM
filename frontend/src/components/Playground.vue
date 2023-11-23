@@ -45,6 +45,7 @@
       selectedPosition: 'CF',
       showChart: false,
       showPage: false,
+      sofifaid: '158023',
     };
   },
   methods: {
@@ -52,6 +53,7 @@
       this.showChart = true;
       this.selectedPosition = position;
       this.showPage = true;
+      this.sofifaid = '158024';
     },
     
   },
