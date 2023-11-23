@@ -15,7 +15,8 @@
       <Player :top="200" :left="500" :position="'RB'" @showBarChart="showBarChart" />
       <Player :top="300" :left="270" :position="'GK'" @showBarChart="showBarChart" />
     </div>
-    <BarChart :position="selectedPosition" />
+    <BarChart v-if="showChart" :position="selectedPosition" />
+    <InfoPage v-if="showPage" :sofifaid="sofifaid" />
   </div>
   
 </template>
@@ -23,21 +24,34 @@
   <script>
   import Player from './Player.vue';
   import BarChart from "./BartChart.vue";
+  import InfoPage from "./InfoPage.vue";
 
   export default {
   name: 'Playground',
+  prps: {
+    gender: {
+      type: String,
+      required: true,
+    },
+
+  },
   components: {
     Player,
     BarChart,
-  },
+    InfoPage
+},
   data() {
     return {
       selectedPosition: 'CF',
+      showChart: false,
+      showPage: false,
     };
   },
   methods: {
     showBarChart(position) {
+      this.showChart = true;
       this.selectedPosition = position;
+      this.showPage = true;
     },
     
   },
@@ -51,6 +65,7 @@
     display: flex;
   }
   .football-playground {
+    
     position: relative;
     width: 600px; 
     height: 400px; 
