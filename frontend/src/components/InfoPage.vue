@@ -5,7 +5,8 @@
             <span>Player Name</span>
             <span>Age</span>
         </div>  
-        <div id="attributeChart"></div>
+        <div class="chart" id="attributeChart1"></div>
+        <div class="chart" id="attributeChart2"></div>
 
     </div>
 </template>
@@ -22,14 +23,17 @@ export default {
     },
     watch: {
         sofifaid: function() {
-            this.showPlayerInfo();
+            const data = this.getPlayerInfo();
+            const chart1 = 'attributeChart1';
+            const chart2 = 'attributeChart2';
+            this.showPlayerInfo(data, chart1);
+            this.showPlayerInfo(data, chart2);
             console.log(this.sofifaid);
         }
     },  
     methods: {
-        showPlayerInfo() {
+        showPlayerInfo(data, chart) {
             // draw radar chart for player attributes 
-            const data = this.getPlayerInfo();
             const attributes = Object.keys(data.attributes);
             const values = Object.values(data.attributes);
             const trace = {
@@ -43,28 +47,32 @@ export default {
                 }
             };
             const layout = {
-                width: 100,
-                height: 100,
+                width: 200,
+                height: 200,
                 margin: {
-                    l: 0,
-                    r: 0,
-                    b: 0,
-                    t: 0,
-                    pad: 0
+                    l: 20,
+                    r: 20,
+                    b: 20,
+                    t: 20,
+                    pad: 20
                 },
                 polar: {
                     radialaxis: {
-                        visible: true,
+                        visible: false,
                         range: [0, 100]
                     },
                     angularaxis: {
-                    showticklabels: false,
+                    showticklabels: true,
+                    tickfont: {
+                        size: 8,
+                        color: '#333',
+                    }
                     }   
                 },
                 
                 showlegend: false
             };
-            Plotly.newPlot('attributeChart', [trace], layout);      
+            Plotly.newPlot(chart, [trace], layout);      
         },
         getPlayerInfo(){
             // get player info from API, currently hard coded
@@ -95,16 +103,16 @@ export default {
 .player-info {
     position: fixed;
     bottom: 50px;
-    width: 80%;
-    height: 150px;
+    width: 1200px;
+    height: 250px;
     display: flex;
     justify-content: space-around; 
     align-items: center;
     background-color: aliceblue;
 }
 .player-info img {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     object-fit: cover;
     margin-right: 20px;
@@ -112,13 +120,14 @@ export default {
 .player-info .info-item {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     color: #333;
 }
 .player-info .info-item span {
     font-size: 1.2em;
-    
+}
+.player-info .chart {
+    width: 150px;
+    height: 150px;
 }
 
 </style>

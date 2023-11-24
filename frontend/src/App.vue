@@ -34,18 +34,19 @@ export default {
 }
 body {
   background-color: #2d4e02; 
+  display: flex;
 }
 .panel {
   position: fixed;
   left: 0;
   top: 0;
   width: 100%;
+  height: fit-content;
   margin-bottom: 20px;
   padding: 10px;
   border: 1px solid #0b4c01;
   border-radius: 5px;
   background-color: #9fd257;
-  z-index: 1000; 
 }
 .panel label {
   font-size: 1.3em;
@@ -65,6 +66,7 @@ body {
 .panel select option {
   color: #333;
 }
+
 </style>
 
   

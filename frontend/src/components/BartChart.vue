@@ -109,6 +109,8 @@
   
   <style scoped>
     #myBarChart {
+        position: relative;
+        margin-top: -250px;
         width: 600px;
         height: 400px;
     }

@@ -1,8 +1,7 @@
 <template>
-  <div class="football-container">
-    <div class="football-playground">
+  <div class="container">
+    <div class="playground">
       <img src="@/assets/field.jpeg" alt="Field"  />
-      <slot></slot>
       <Player :top="10" :left="200" :position="'CF'" @showBarChart="showBarChart"/>
       <Player :top="10" :left="350" :position="'CF'" @showBarChart="showBarChart" />
       <Player :top="100" :left="20" :position="'LM'" @showBarChart="showBarChart" />
@@ -15,8 +14,8 @@
       <Player :top="200" :left="500" :position="'RB'" @showBarChart="showBarChart" />
       <Player :top="300" :left="270" :position="'GK'" @showBarChart="showBarChart" />
     </div>
-    <BarChart v-if="showChart" :position="selectedPosition" />
-    <InfoPage v-if="showPage" :sofifaid="sofifaid" />
+    <BarChart :position="selectedPosition" />
+    <InfoPage :sofifaid="sofifaid" />
   </div>
   
 </template>
@@ -63,17 +62,17 @@
   
   <style scoped>
 
-  .football-container {
+  .container {
     display: flex;
   }
-  .football-playground {
-    
+  .playground {
     position: relative;
+    margin-top: -250px;
     width: 600px; 
     height: 400px; 
     background-color: green; 
   }
-  img {
+  .playground img {
     transform: rotate(180deg);
     width: 100%;
     height: 100%;
