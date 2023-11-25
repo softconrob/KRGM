@@ -14,7 +14,7 @@
       <Player :top="200" :left="500" :position="'RB'" @showBarChart="showBarChart" />
       <Player :top="300" :left="270" :position="'GK'" @showBarChart="showBarChart" />
     </div>
-    <BarChart :position="selectedPosition" />
+    <BarChart :position="selectedPosition" :gender="selectedGender"/>
     <InfoPage :sofifaid="sofifaid" />
   </div>
   
@@ -27,7 +27,7 @@
 
   export default {
   name: 'Playground',
-  prps: {
+  props: {
     gender: {
       type: String,
       required: true,
@@ -42,20 +42,23 @@
   data() {
     return {
       selectedPosition: 'CF',
-      showChart: false,
-      showPage: false,
+      selectedGender: 'male',
       sofifaid: '158023',
     };
   },
   methods: {
     showBarChart(position) {
-      this.showChart = true;
       this.selectedPosition = position;
-      this.showPage = true;
       this.sofifaid = '158024';
     },
     
   },
+  watch : {
+    gender: function() {
+      this.selectedGender = this.gender;
+      console.log(this.selectedGender);
+    }
+  }
 };
   </script>
   

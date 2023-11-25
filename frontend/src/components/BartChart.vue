@@ -9,22 +9,49 @@
   
   export default {
     name: "BarChart",
+    data: () => ({
+    BarPlotData: {x: [], y: []}
+  }),
     props: {
       position: {
+        type: String,
+        required: true,
+      },
+      gender: {
         type: String,
         required: true,
       },
     },
     watch: {
       position: function() {
-        this.drawBarChart();
+        this.BarPlotData.x = [];
+        this.BarPlotData.y = [];
+        this.fetchData();
+      },
+      gender: function() {
+        this.BarPlotData.x = [];
+        this.BarPlotData.y = [];
+        this.fetchData();
       }
     },
     methods: {
+      async fetchData() {
+        const dict_pos = {'GK': '0', 'CF': '1', 'LM': '2', 'RM': '3', 'CM': '4', 'CB': '5', 'LB': '6', 'RB': '7'};
+        const dict_gender = {'female': 0, 'male': '1'}
+        var reqUrl = 'http://127.0.0.1:5000/ranks/' + dict_gender[this.gender] + '/' + dict_pos[this.position]
+        const response = await fetch(reqUrl);
+        const data = await response.json();
+        console.log(data);
+        data.forEach(player => {
+          this.BarPlotData.x.push(player.short_name);
+          this.BarPlotData.y.push(player.overall);
+        });
+        this.drawBarChart();
+      },
       drawBarChart() {
         var trace1 = {
-          x: Object.keys(this.getDataForPosition(this.position)),
-          y: Object.values(this.getDataForPosition(this.position)),
+          x: this.BarPlotData.x,
+          y: this.BarPlotData.y,
           type: 'bar',
           marker: {
             color: 'rgb(26, 118, 255)',
@@ -38,71 +65,17 @@
         var data = [trace1];
         var layout = {
           title: 'Ranking of ' + this.position + ' players',
-          
           yaxis: {
             title: 'Performance',
+            range: [80, 95]
           },
         };
         Plotly.newPlot('myBarChart', data, layout);
       },
-      getDataForPosition(position) {
-        const data = {
-          CF: {
-            'Lionel Messi': 100,
-            'Cristiano Ronaldo': 90,
-            'Neymar': 80,
-            'Robert Lewandowski': 70,
-            'Harry Kane': 60,
-          },
-          CM: {
-            'Kevin De Bruyne': 100,
-            'Luka Modric': 90,
-            'N\'Golo Kanté': 80,
-            'Toni Kroos': 70,
-            'Paul Pogba': 60,
-          },
-          CB: {
-            'Sergio Ramos': 100,
-            'Virgil van Dijk': 90,
-            'Raphael Varane': 80,
-            'Gerard Piqué': 70,
-            'Giorgio Chiellini': 60,
-          },
-          LB: {
-            'Marcelo': 100,
-            'Jordi Alba': 90,
-            'Alex Sandro': 80,
-            'David Alaba': 70,
-            'Andrew Robertson': 60,
-          },
-          RB: {
-            'Dani Alves': 100,
-            'Joshua Kimmich': 90,
-            'Kyle Walker': 80,
-            'Sergio Roberto': 70,
-            'César Azpilicueta': 60,
-          },
-          LM: {
-            'Eden Hazard': 100,
-            'Sadio Mané': 90,
-            'Marco Reus': 80
-          },
-          RM: {
-            'Mohamed Salah': 100,
-            'Gareth Bale': 90,
-            'Bernardo Silva': 80
-          },
-          GK: {
-            'Jan Oblak': 100,
-            'David de Gea': 90,
-            'Thibaut Courtois': 80
-          },
-        };
-        return data[position];
-      },
+      
     },
     mounted() {
-      this.drawBarChart();
+      this.fetchData();
     },
   };
   </script>

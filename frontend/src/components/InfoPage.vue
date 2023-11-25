@@ -1,13 +1,13 @@
 <template>
     <div class="player-info">
-        <img :src="'https://cdn.sofifa.net/players/188/545/22_120.png'" alt="Player Picture">
+        <img :src= playerInfo.faceurl alt="Player Picture">
+        <img :src= playerInfo.nation_flag_url alt="Player Picture">
         <div class="info-item">
-            <span>Player Name</span>
-            <span>Age</span>
+            <span>{{ playerInfo.name }}</span>
+            <span>Age: {{ playerInfo.age }}</span>
         </div>  
         <div class="chart" id="attribute1"></div>
         <div class="chart" id="attribute2"></div>
-
     </div>
 </template>
 
@@ -15,6 +15,9 @@
 import Plotly from 'plotly.js/dist/plotly';
 export default {
     name: 'InfoPage',
+    data: () => ({
+        playerInfo: {faceurl: '', name: '', age: '', nation_flag_url: ''},
+    }),
     props: {
         sofifaid: {
             type: String,
@@ -23,19 +26,30 @@ export default {
     },
     watch: {
         sofifaid: function() {
-            const data = this.getPlayerInfo();
-            const chart1 = 'attribute1';
-            const chart2 = 'attribute2';
-            this.showPlayerInfo(data, chart1);
-            this.showPlayerInfo(data, chart2);
-            console.log(this.sofifaid);
+            this.fetchData();
         }
     },  
     methods: {
-        showPlayerInfo(data, chart) {
+        async fetchData() {
+            var reqUrl = 'http://127.0.0.1:5000/players/' + this.sofifaid;
+            const response = await fetch(reqUrl);
+            const data = await response.json();
+            this.playerInfo.nation_flag_url = data.nation_flag_url;
+            this.playerInfo.faceurl = data.player_face_url;
+            this.playerInfo.name = data.short_name;
+            this.playerInfo.age = data.age;
+            this.playerInfo.attributes = data.attacking;
+            let attributes1 = ['pace', 'shooting', 'passing', 'dribbling', 'defending', 'physic'];
+            let values1 = [data.pace, data.shooting, data.passing, data.dribbling, data.defending, data.physic];
+            let attributes2 = ['attacking', 'skill', 'movement', 'power', 'mentality','goalkeeping'];
+            let values2 = [data.attacking, data.skill, data.movement, data.power, data.mentality, data.goalkeeping];
+            this.drawRadarChart("attribute1", attributes1, values1);
+            this.drawRadarChart("attribute2", attributes2, values2);
+        },
+        drawRadarChart(chartId, k, v) {
             // draw radar chart for player attributes 
-            const attributes = Object.keys(data.attributes);
-            const values = Object.values(data.attributes);
+            const attributes = k;
+            const values = v;
             const trace = {
                 type: 'scatterpolar',
                 r: values,
@@ -48,7 +62,6 @@ export default {
             };
             const layout = {
                 title: {
-                    text: chart,
                     font: {
                         size: 14,
                         color: '#333',
@@ -81,28 +94,12 @@ export default {
                 
                 showlegend: false
             };
-            Plotly.newPlot(chart, [trace], layout);      
+            Plotly.newPlot(chartId, [trace], layout);      
         },
-        getPlayerInfo(){
-            // get player info from API, currently hard coded
-            const data = {
-                name: 'Lionel Messi',
-                age: 34,
-                attributes: {
-                    pace: 85,
-                    shooting: 92,
-                    passing: 91,
-                    dribbling: 95,
-                    defending: 38,
-                    physical: 65,
-                }
-            }
-            return data;
-
-        }
+        
     },
     mounted () {
-        this.showPlayerInfo();
+        this.fetchData();
     }
 
 };
@@ -132,7 +129,7 @@ export default {
     color: #333;
 }
 .player-info .info-item span {
-    font-size: 1.2em;
+    font-size: 2em;
 }
 .player-info .chart {
     width: 200px;
