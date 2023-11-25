@@ -1,7 +1,6 @@
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from typing import List, Optional
-from bson import ObjectId
 
 class Player(BaseModel):
     sofifa_id: int
@@ -27,5 +26,12 @@ class Player(BaseModel):
     mentality: int
     goalkeeping: int
     def to_json(self):
-            return jsonable_encoder(self, exclude_none=True)
+        return jsonable_encoder(self, exclude_none=True)
+
+class PlayerRank(BaseModel):
+    sofifa_id: int
+    short_name: str
+    overall: int
+    def to_json(self):
+        return jsonable_encoder(self, exclude_none=True)
 
