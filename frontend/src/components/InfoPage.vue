@@ -5,8 +5,8 @@
             <span>Player Name</span>
             <span>Age</span>
         </div>  
-        <div class="chart" id="attributeChart1"></div>
-        <div class="chart" id="attributeChart2"></div>
+        <div class="chart" id="attribute1"></div>
+        <div class="chart" id="attribute2"></div>
 
     </div>
 </template>
@@ -24,8 +24,8 @@ export default {
     watch: {
         sofifaid: function() {
             const data = this.getPlayerInfo();
-            const chart1 = 'attributeChart1';
-            const chart2 = 'attributeChart2';
+            const chart1 = 'attribute1';
+            const chart2 = 'attribute2';
             this.showPlayerInfo(data, chart1);
             this.showPlayerInfo(data, chart2);
             console.log(this.sofifaid);
@@ -47,14 +47,23 @@ export default {
                 }
             };
             const layout = {
+                title: {
+                    text: chart,
+                    font: {
+                        size: 14,
+                        color: '#333',
+                    },
+                    xref: 'paper',
+                    x: 0.05,
+                },
                 width: 200,
                 height: 200,
                 margin: {
                     l: 20,
                     r: 20,
                     b: 20,
-                    t: 20,
-                    pad: 20
+                    t: 30,
+                    pad: 10
                 },
                 polar: {
                     radialaxis: {
@@ -64,7 +73,7 @@ export default {
                     angularaxis: {
                     showticklabels: true,
                     tickfont: {
-                        size: 8,
+                        size: 12,
                         color: '#333',
                     }
                     }   
@@ -126,8 +135,8 @@ export default {
     font-size: 1.2em;
 }
 .player-info .chart {
-    width: 150px;
-    height: 150px;
+    width: 200px;
+    height: 200px;
 }
 
 </style>

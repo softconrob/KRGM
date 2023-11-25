@@ -1,0 +1,9 @@
+# requirements for a flask app
+
+flask==2.1.1
+flask-restx==0.5.1
+flask-cors
+fastapi
+flask_pymongo
+pymongo
+werkzeug<1.0.0
