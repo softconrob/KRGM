@@ -10,7 +10,8 @@
   export default {
     name: "BarChart",
     data: () => ({
-    BarPlotData: {x: [], y: []}
+    BarPlotData: {x: [], y: []},
+    playerId: [],
   }),
     props: {
       position: {
@@ -26,11 +27,13 @@
       position: function() {
         this.BarPlotData.x = [];
         this.BarPlotData.y = [];
+        this.playerId = [];
         this.fetchData();
       },
       gender: function() {
         this.BarPlotData.x = [];
         this.BarPlotData.y = [];
+        this.playerId = [];
         this.fetchData();
       }
     },
@@ -43,6 +46,7 @@
         const data = await response.json();
         console.log(data);
         data.forEach(player => {
+          this.playerId.push(player.sofifa_id);
           this.BarPlotData.x.push(player.short_name);
           this.BarPlotData.y.push(player.overall);
         });
@@ -71,7 +75,23 @@
           },
         };
         Plotly.newPlot('myBarChart', data, layout);
+        this.clickBarChart();
       },
+
+      clickBarChart() {
+        var pn = 0
+        var that = this
+        var myPlot = document.getElementById('myBarChart');
+        myPlot.on('plotly_click', function(data){
+          // find the player id of the clicked bar
+          var pn = data.points[0].pointNumber;
+          var player_id = that.playerId[pn];
+          console.log(player_id);
+          that.$emit('showInfoPage', player_id);
+        });
+
+
+      }
       
     },
     mounted() {

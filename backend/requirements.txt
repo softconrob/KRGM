@@ -7,3 +7,5 @@ fastapi
 flask_pymongo
 pymongo
 werkzeug<1.0.0
+scikit-learn
+pandas

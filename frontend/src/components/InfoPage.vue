@@ -1,11 +1,17 @@
 <template>
     <div class="player-info">
-        <img :src= playerInfo.faceurl alt="Player Picture">
-        <img :src= playerInfo.nation_flag_url alt="Player Picture">
         <div class="info-item">
             <span>{{ playerInfo.name }}</span>
             <span>Age: {{ playerInfo.age }}</span>
         </div>  
+        <img :src="playerInfo.faceurl" alt="Missing" @error="setDefaultImage" ref="playerImage">
+        <img :src= playerInfo.nation_flag_url alt="Missing" @error="setDefaultImageNation" ref="nationFlag">
+        <ul class="alternatives">
+            <li v-for="player in similarPlayers" :key="player.sofifa_id" @click="handlePlayerChange(player)" class="player-item">
+                <img :src= player.player_face_url alt="Img" class="player-img" @error="setDefaultImage">
+                <span class="player-name">{{ player.short_name }}</span>
+            </li>
+        </ul>
         <div class="chart" id="attribute1"></div>
         <div class="chart" id="attribute2"></div>
     </div>
@@ -17,6 +23,9 @@ export default {
     name: 'InfoPage',
     data: () => ({
         playerInfo: {faceurl: '', name: '', age: '', nation_flag_url: ''},
+        similarPlayers: [],
+        selectedPlayersId: '',
+        selectedPlayer: '',
     }),
     props: {
         sofifaid: {
@@ -26,12 +35,15 @@ export default {
     },
     watch: {
         sofifaid: function() {
+            this.setPlayerId();
+        },
+        selectedPlayersId: function() {
             this.fetchData();
         }
     },  
     methods: {
         async fetchData() {
-            var reqUrl = 'http://127.0.0.1:5000/players/' + this.sofifaid;
+            var reqUrl = 'http://127.0.0.1:5000/players/' + this.selectedPlayersId;
             const response = await fetch(reqUrl);
             const data = await response.json();
             this.playerInfo.nation_flag_url = data.nation_flag_url;
@@ -45,6 +57,24 @@ export default {
             let values2 = [data.attacking, data.skill, data.movement, data.power, data.mentality, data.goalkeeping];
             this.drawRadarChart("attribute1", attributes1, values1);
             this.drawRadarChart("attribute2", attributes2, values2);
+            var reqUrl2 = 'http://127.0.0.1:5000/players/similar/' + this.playerInfo.name;
+            const response2 = await fetch(reqUrl2);
+            const data2 = await response2.json();
+            this.similarPlayers = data2;
+        },
+        setPlayerId() {
+            this.selectedPlayersId = this.sofifaid;
+            console.log(this.selectedPlayersId);
+        },
+        handlePlayerChange(player) {
+            // update player info and charts with the new id
+            this.selectedPlayersId = player.sofifa_id;
+        },
+        setDefaultImage(event) {
+            event.target.src = 'src/assets/missing.jpeg';
+        },
+        setDefaultImageNation(event) {
+            event.target.src = 'src/assets/earth.jpeg';
         },
         drawRadarChart(chartId, k, v) {
             // draw radar chart for player attributes 
@@ -80,7 +110,7 @@ export default {
                 },
                 polar: {
                     radialaxis: {
-                        visible: false,
+                        visible: true,
                         range: [0, 100]
                     },
                     angularaxis: {
@@ -134,6 +164,32 @@ export default {
 .player-info .chart {
     width: 200px;
     height: 200px;
+}
+.player-info .alternatives {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 200px;
+    height: 150px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.player-info .alternatives .player-item {
+    display: flex;
+    align-items: center;
+}
+
+.player-info .alternatives .player-img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+.player-info .alternatives .player-name {
+    font-size: 1.2em;
+    color: #333;
 }
 
 </style>

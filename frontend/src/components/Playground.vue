@@ -14,7 +14,7 @@
       <Player :top="200" :left="500" :position="'RB'" @showBarChart="showBarChart" />
       <Player :top="300" :left="270" :position="'GK'" @showBarChart="showBarChart" />
     </div>
-    <BarChart :position="selectedPosition" :gender="selectedGender"/>
+    <BarChart :position="selectedPosition" :gender="selectedGender" @showInfoPage="showInfoPage"/>
     <InfoPage :sofifaid="sofifaid" />
   </div>
   
@@ -51,6 +51,9 @@
       this.selectedPosition = position;
       this.sofifaid = '158024';
     },
+    showInfoPage(sofifaid) {
+      this.sofifaid = sofifaid;
+    }
     
   },
   watch : {
