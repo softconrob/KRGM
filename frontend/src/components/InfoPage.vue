@@ -29,7 +29,7 @@ export default {
     }),
     props: {
         sofifaid: {
-            type: String,
+            type: Number,
             required: true
         },
     },
@@ -64,7 +64,6 @@ export default {
         },
         setPlayerId() {
             this.selectedPlayersId = this.sofifaid;
-            console.log(this.selectedPlayersId);
         },
         handlePlayerChange(player) {
             // update player info and charts with the new id
