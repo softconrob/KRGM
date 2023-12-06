@@ -89,10 +89,7 @@
           console.log(player_id);
           that.$emit('showInfoPage', player_id);
         });
-
-
-      }
-      
+      }    
     },
     mounted() {
       this.fetchData();

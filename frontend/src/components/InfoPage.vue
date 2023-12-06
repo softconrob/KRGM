@@ -1,19 +1,11 @@
 <template>
-    <div class="player-info">
-        <div class="info-item">
-            <span>{{ playerInfo.name }}</span>
-            <span>Age: {{ playerInfo.age }}</span>
-        </div>  
-        <img :src="playerInfo.faceurl" alt="Missing" @error="setDefaultImage" ref="playerImage">
-        <img :src= playerInfo.nation_flag_url alt="Missing" @error="setDefaultImageNation" ref="nationFlag">
-        <ul class="alternatives">
-            <li v-for="player in similarPlayers" :key="player.sofifa_id" @click="handlePlayerChange(player)" class="player-item">
+    <div class="alternatives">
+        <ul class="players">
+            <li v-for="player in similarPlayers" :key="player.sofifa_id" @click="pickPlayer(player)" class="player-item">
                 <img :src= player.player_face_url alt="Img" class="player-img" @error="setDefaultImage">
                 <span class="player-name">{{ player.short_name }}</span>
             </li>
         </ul>
-        <div class="chart" id="attribute1"></div>
-        <div class="chart" id="attribute2"></div>
     </div>
 </template>
 
@@ -24,50 +16,35 @@ export default {
     data: () => ({
         playerInfo: {faceurl: '', name: '', age: '', nation_flag_url: ''},
         similarPlayers: [],
-        selectedPlayersId: '',
-        selectedPlayer: '',
     }),
     props: {
         sofifaid: {
             type: Number,
-            required: true
+            required: true,
+            default: 0,
         },
     },
     watch: {
         sofifaid: function() {
-            this.setPlayerId();
-        },
-        selectedPlayersId: function() {
             this.fetchData();
         }
     },  
     methods: {
-        async fetchData() {
-            var reqUrl = 'http://127.0.0.1:5000/players/' + this.selectedPlayersId;
+        async fetchData() { 
+            var reqUrl1 = 'http://127.0.0.1:5000/players/' + this.sofifaid;
+            const response1 = await fetch(reqUrl1);
+            const data1 = await response1.json();
+            this.playerInfo.nation_flag_url = data1.nation_flag_url;
+            this.playerInfo.faceurl = data1.player_face_url;
+            this.playerInfo.name = data1.short_name;
+            this.playerInfo.age = data1.age;
+            var reqUrl = 'http://127.0.0.1:5000/players/similar/' + this.playerInfo.name;
             const response = await fetch(reqUrl);
             const data = await response.json();
-            this.playerInfo.nation_flag_url = data.nation_flag_url;
-            this.playerInfo.faceurl = data.player_face_url;
-            this.playerInfo.name = data.short_name;
-            this.playerInfo.age = data.age;
-            this.playerInfo.attributes = data.attacking;
-            let attributes1 = ['pace', 'shooting', 'passing', 'dribbling', 'defending', 'physic'];
-            let values1 = [data.pace, data.shooting, data.passing, data.dribbling, data.defending, data.physic];
-            let attributes2 = ['attacking', 'skill', 'movement', 'power', 'mentality','goalkeeping'];
-            let values2 = [data.attacking, data.skill, data.movement, data.power, data.mentality, data.goalkeeping];
-            this.drawRadarChart("attribute1", attributes1, values1);
-            this.drawRadarChart("attribute2", attributes2, values2);
-            var reqUrl2 = 'http://127.0.0.1:5000/players/similar/' + this.playerInfo.name;
-            const response2 = await fetch(reqUrl2);
-            const data2 = await response2.json();
-            this.similarPlayers = data2;
+            this.similarPlayers = data;
         },
-        setPlayerId() {
-            this.selectedPlayersId = this.sofifaid;
-        },
-        handlePlayerChange(player) {
-            // update player info and charts with the new id
-            this.selectedPlayersId = player.sofifa_id;
+        pickPlayer(player) {
+            this.$emit('comparePlayer', player.sofifa_id);
         },
         setDefaultImage(event) {
             event.target.src = 'src/assets/missing.jpeg';
@@ -75,67 +52,15 @@ export default {
         setDefaultImageNation(event) {
             event.target.src = 'src/assets/earth.jpeg';
         },
-        drawRadarChart(chartId, k, v) {
-            // draw radar chart for player attributes 
-            const attributes = k;
-            const values = v;
-            const trace = {
-                type: 'scatterpolar',
-                r: values,
-                theta: attributes,
-                fill: 'toself',
-                fillcolor: 'rgba(0, 0, 255, 0.1)',
-                line: {
-                    color: 'rgba(0, 0, 255, 0.5)',
-                }
-            };
-            const layout = {
-                title: {
-                    font: {
-                        size: 14,
-                        color: '#333',
-                    },
-                    xref: 'paper',
-                    x: 0.05,
-                },
-                width: 200,
-                height: 200,
-                margin: {
-                    l: 20,
-                    r: 20,
-                    b: 20,
-                    t: 30,
-                    pad: 10
-                },
-                polar: {
-                    radialaxis: {
-                        visible: true,
-                        range: [0, 100]
-                    },
-                    angularaxis: {
-                    showticklabels: true,
-                    tickfont: {
-                        size: 12,
-                        color: '#333',
-                    }
-                    }   
-                },
-                
-                showlegend: false
-            };
-            Plotly.newPlot(chartId, [trace], layout);      
-        },
-        
     },
     mounted () {
         this.fetchData();
     }
-
 };
 </script>
 
 <style scoped>
-.player-info {
+  .alternatives {
     position: fixed;
     bottom: 50px;
     width: 1200px;
@@ -143,52 +68,29 @@ export default {
     display: flex;
     justify-content: space-around; 
     align-items: center;
-    background-color: aliceblue;
-}
-.player-info img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 20px;
-}
-.player-info .info-item {
-    display: flex;
-    flex-direction: column;
-    color: #333;
-}
-.player-info .info-item span {
-    font-size: 2em;
-}
-.player-info .chart {
-    width: 200px;
-    height: 200px;
-}
-.player-info .alternatives {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    width: 200px;
-    height: 150px;
+    background-color: aliceblue;/* Use flexbox to display items in a row */
+  }
+  
+  .players {
     list-style: none;
+    display: flex; /* Display list items in a row */
     margin: 0;
     padding: 0;
-}
-.player-info .alternatives .player-item {
-    display: flex;
-    align-items: center;
-}
-
-.player-info .alternatives .player-img {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-}
-
-.player-info .alternatives .player-name {
-    font-size: 1.2em;
-    color: #333;
-}
-
-</style>
+  }
+  
+  .player-item {
+    margin-right: 20px; /* Adjust the spacing between players */
+  }
+  
+  .player-img {
+    width: 100px; /* Adjust the image width as needed */
+    height: auto;
+    border-radius: 5px; /* Add border-radius for rounded corners */
+  }
+  
+  .player-name {
+    display: block;
+    text-align: center;
+    margin-top: 5px; /* Adjust the spacing between image and name */
+  }
+  </style>

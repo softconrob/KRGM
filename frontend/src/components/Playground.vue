@@ -13,14 +13,16 @@
         @showBarChart="showBarChart"
       />
     </div>
-    <BarChart :position="selectedPosition" :gender="selectedGender" :playerRef="selectedPlayersRef" @showInfoPage="showInfoPage" />
-    <InfoPage :sofifaid=sofifaid />
+    <BarChart v-show="showBar" :position="selectedPosition" :gender="selectedGender" @showInfoPage="showInfoPage" />
+    <RadarChart v-show="showRadar" :player1Id="sofifaid" :player2Id="player2Id" />
+    <InfoPage v-show="showInfo" :sofifaid=sofifaid @comparePlayer="comparePlayer" />
   </div>
 </template>
 
 <script>
 import Player from "./Player.vue";
 import BarChart from "./BarChart.vue";
+import RadarChart from "./RadarChart.vue";
 import InfoPage from "./InfoPage.vue";
 
 export default {
@@ -35,38 +37,51 @@ export default {
     Player,
     BarChart,
     InfoPage,
+    RadarChart,
   },
   data() {
     return {
       selectedPosition: 'CF',
       selectedGender: 'male',
-      sofifaid: 158023,
+      sofifaid: 0,
       selectedPlayersRef: '',
+      showBar: false,
+      showRadar: false,
+      showInfo: false,
+      player2Id: 0,
       players: [
         { pref: 0, top: 10, left: 200, position: 'CF', pid: 0 },
-        { pref: 1, top: 10, left: 350, position: 'CF', pid: 1 },
-        { pref: 2, top: 100, left: 20, position: 'LM', pid: 2 },
-        { pref: 3, top: 100, left: 500, position: 'RM', pid: 3 },
-        { pref: 4, top: 150, left: 200, position: 'CM', pid: 4 },
-        { pref: 5, top: 150, left: 350, position: 'CM', pid: 5 },
-        { pref: 6, top: 250, left: 200, position: 'CB', pid: 6 },
-        { pref: 7, top: 250, left: 350, position: 'CB', pid: 7 },
-        { pref: 8, top: 200, left: 20, position: 'LB', pid: 8 },
-        { pref: 9, top: 200, left: 500, position: 'RB', pid: 9 },
-        { pref: 10, top: 300, left: 270, position: 'GK', pid: 10 },
+        { pref: 1, top: 10, left: 350, position: 'CF', pid: 0 },
+        { pref: 2, top: 100, left: 20, position: 'LM', pid: 0 },
+        { pref: 3, top: 100, left: 500, position: 'RM', pid: 0 },
+        { pref: 4, top: 150, left: 200, position: 'CM', pid: 0 },
+        { pref: 5, top: 150, left: 350, position: 'CM', pid: 0 },
+        { pref: 6, top: 250, left: 200, position: 'CB', pid: 0 },
+        { pref: 7, top: 250, left: 350, position: 'CB', pid: 0 },
+        { pref: 8, top: 200, left: 20, position: 'LB', pid: 0 },
+        { pref: 9, top: 200, left: 500, position: 'RB', pid: 0 },
+        { pref: 10, top: 300, left: 270, position: 'GK', pid: 0 },
       ],
     };
   },
   methods: {
     showBarChart(position, pref) {
+      this.showRadar = false;
+      this.showBar = true;
       this.selectedPosition = position;
       this.selectedPlayersRef = pref;
     },
     showInfoPage(sofifaid) {
+      this.showInfo = true;
       this.sofifaid = sofifaid;
       // change the pid of the selected player
       this.players[this.selectedPlayersRef].pid = sofifaid;
       console.log(this.players[this.selectedPlayersRef].pid);
+    },
+    comparePlayer(pid) {
+      this.showBar = false;
+      this.showRadar = true;
+      this.player2Id = pid;
     },
   },
   watch: {
