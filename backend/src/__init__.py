@@ -50,7 +50,8 @@ def find_similar_players(player_name, df, model, player_attributes):
     similar_players = []
     # return the top 5 similar players with their sofifa_id, short_name
     for i in indices:
-        similar_players.append({"sofifa_id": int(df.iloc[i]['sofifa_id']), "short_name": df.iloc[i]['short_name'], "player_face_url": df.iloc[i]['player_face_url']})
+        similar_players.append({"sofifa_id": int(df.iloc[i]['sofifa_id']), "short_name": df.iloc[i]['short_name'], 
+        "player_face_url": df.iloc[i]['player_face_url'], "nationality_name": df.iloc[i]['nationality_name'], "age": int(df.iloc[i]['age'])})
     return similar_players
 
 class SimilarPlayers(Resource):

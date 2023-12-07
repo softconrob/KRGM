@@ -11,6 +11,7 @@
         :position="player.position"
         :pid="player.pid"
         @showBarChart="showBarChart"
+        :class="{ 'selected-player': player.isSelected }"
       />
     </div>
     <BarChart v-show="showBar" :position="selectedPosition" :gender="selectedGender" @showInfoPage="showInfoPage" />
@@ -50,17 +51,17 @@ export default {
       showInfo: false,
       player2Id: 0,
       players: [
-        { pref: 0, top: 10, left: 200, position: 'CF', pid: 0 },
-        { pref: 1, top: 10, left: 350, position: 'CF', pid: 0 },
-        { pref: 2, top: 100, left: 20, position: 'LM', pid: 0 },
-        { pref: 3, top: 100, left: 500, position: 'RM', pid: 0 },
-        { pref: 4, top: 150, left: 200, position: 'CM', pid: 0 },
-        { pref: 5, top: 150, left: 350, position: 'CM', pid: 0 },
-        { pref: 6, top: 250, left: 200, position: 'CB', pid: 0 },
-        { pref: 7, top: 250, left: 350, position: 'CB', pid: 0 },
-        { pref: 8, top: 200, left: 20, position: 'LB', pid: 0 },
-        { pref: 9, top: 200, left: 500, position: 'RB', pid: 0 },
-        { pref: 10, top: 300, left: 270, position: 'GK', pid: 0 },
+        { pref: 0, top: 10, left: 200, position: 'CF', pid: 0, isSelected: false },
+        { pref: 1, top: 10, left: 350, position: 'CF', pid: 0, isSelected: false },
+        { pref: 2, top: 100, left: 20, position: 'LM', pid: 0, isSelected: false },
+        { pref: 3, top: 100, left: 500, position: 'RM', pid: 0, isSelected: false },
+        { pref: 4, top: 150, left: 200, position: 'CM', pid: 0, isSelected: false },
+        { pref: 5, top: 150, left: 350, position: 'CM', pid: 0, isSelected: false },
+        { pref: 6, top: 250, left: 200, position: 'CB', pid: 0, isSelected: false },
+        { pref: 7, top: 250, left: 350, position: 'CB', pid: 0, isSelected: false },
+        { pref: 8, top: 200, left: 20, position: 'LB', pid: 0, isSelected: false },
+        { pref: 9, top: 200, left: 500, position: 'RB', pid: 0, isSelected: false },
+        { pref: 10, top: 300, left: 270, position: 'GK', pid: 0, isSelected: false },
       ],
     };
   },
@@ -70,6 +71,8 @@ export default {
       this.showBar = true;
       this.selectedPosition = position;
       this.selectedPlayersRef = pref;
+      this.players.forEach((p) => (p.isSelected = false));
+      this.players[pref].isSelected = true;
     },
     showInfoPage(sofifaid) {
       this.showInfo = true;
@@ -107,5 +110,8 @@ export default {
   transform: rotate(180deg);
   width: 100%;
   height: 100%;
+}
+.selected-player {
+  border: 2px solid yellow;
 }
 </style>

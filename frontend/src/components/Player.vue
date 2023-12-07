@@ -1,19 +1,25 @@
+<!-- Player.vue -->
 <template>
-  <div class="football-player" :style="{ top: `${top}px`, left: `${left}px` }" @click="handleClick">
-    <img :src=imgSrc alt="Player" />
+  <div
+    class="football-player"
+    :style="{ top: `${top}px`, left: `${left}px` }"
+    @click="handleClick"
+  >
+    <img :src="imgSrc" alt="Player" />
     <span class="player-position" v-show="showPosition">{{ position }}</span>
+    <span class="player-name">{{ player.short_name }}</span>
   </div>
 </template>
 
 <script>
-import { T } from 'plotly.js/dist/plotly';
-
 export default {
   name: 'Player',
   data() {
     return {
       imgSrc: 'src/assets/player.svg',
       showPosition: true,
+      showProfile: false,
+      player: { short_name: '', nationality_name: '', age: '' },
     };
   },
   props: {
@@ -40,28 +46,31 @@ export default {
     },
   },
   watch: {
-    pid: function() {
+    pid: function () {
       this.showPosition = false;
+      this.showProfile = true;
       this.fetchData();
+    },
   },
-},
   methods: {
     handleClick() {
       // Emit a 'showBarChart' event with the player's position and reference
-      this.$emit('showBarChart', this.position, this.pref );
+      this.$emit('showBarChart', this.position, this.pref);
     },
     async fetchData() {
       var reqUrl = 'http://127.0.0.1:5000/players/' + this.pid;
       const response = await fetch(reqUrl);
       const data = await response.json();
       this.imgSrc = data.player_face_url;
+      this.player.short_name = data.short_name;
+      this.player.nationality_name = data.nationality_name;
+      this.player.age = data.age;
+    },
   },
-},
   mounted() {
     this.fetchData();
   },
 };
-
 </script>
 
 <style scoped>
@@ -85,6 +94,12 @@ img {
   font-size: 20px;
   color: white;
 }
+
+.player-name {
+  font: optional;
+  color: white;
+}
+
 </style>
 
   
